@@ -19,7 +19,7 @@ const ticketSchema = new mongoose.Schema(
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Company',
-      required: false
+      required: true
     },
     departmentId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -34,7 +34,7 @@ const ticketSchema = new mongoose.Schema(
     issuerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: false
+      required: true
     },
     description: {
       type: String,
