@@ -24,7 +24,8 @@ const companySchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'suspended'],
+      enum: ['active', 'suspended', 'pending'],
+      default: 'pending',
       required: true
     },
     notes: {

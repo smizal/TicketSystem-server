@@ -19,7 +19,9 @@ const userSchema = new mongoose.Schema(
       required: true
     },
     cpr: {
-      type: Number,
+      type: String,
+      min: 9,
+      max: 9,
       required: true
     },
     companyId: {
