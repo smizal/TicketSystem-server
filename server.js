@@ -18,21 +18,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(cors());
-
+const { verifyToken } = require("./middleware/jwtUtils");
 const adminRoute = require("./routes/adminRoutes.js");
 const authRoute = require("./routes/authRoutes.js");
 const companiesRoute = require("./routes/companiesRoutes.js");
-// const departmentsRoute = require("./routes/departmentsRoutes")
+const departmentsRoute = require("./routes/departmentsRoutes");
 const ticketsRoute = require("./routes/ticketsRoutes");
-// const usersRoute = require("./routes/usersRoutes")
+const usersRoute = require("./routes/usersRoutes");
 
 // Proper Routes use
 app.use("/admin", adminRoute);
 app.use("/login", authRoute);
 app.use("/companies", companiesRoute);
-// app.use("/departements", departmentsRoute)
+app.use("/departements", departmentsRoute);
 app.use("/tickets", ticketsRoute);
-// app.use("/users", usersRoute)
+app.use("/users", usersRoute);
 
 app.listen(PORT, () => {
   console.log(`The express app is ready on http://localhost:${PORT}`);

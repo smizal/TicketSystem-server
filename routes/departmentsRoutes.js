@@ -1,24 +1,20 @@
-// const express = require("express")
-// const {
-//   departmentList,
-//   newDepartmentForm,
-//   createDepartment,
-//   departmentDetails,
-//   editDepartment,
-//   updateDepartment,
-//   editDepartmentStatusForm,
-//   deleteDepartment,
-// } = require("../controllers/departmentsController.js") // Updated to departmentsController.js
+const express = require("express");
+const {
+  index,
+  companyDepartments,
+  create,
+  show,
+  update,
+  deleting,
+} = require("../controllers/departmentsController.js"); // Updated to departmentsController.js
 
-// const router = express.Router()
+const router = express.Router();
 
-// router.get("/", departmentList)
-// router.get("/new", newDepartmentForm)
-// router.post("/", createDepartment)
-// router.get("/:id", departmentDetails)
-// router.post("/edit/:id", editDepartment)
-// router.put("/:id", updateDepartment)
-// router.put("/:id/:status", editDepartmentStatusForm)
-// router.delete("/:id", deleteDepartment)
+router.get("/", index);
+router.get("/dep/:id", companyDepartments);
+router.post("/", create);
+router.get("/:id", show);
+router.post("/edit/:id", update);
+router.delete("/:id", deleting);
 
-// module.exports = router
+module.exports = router;
