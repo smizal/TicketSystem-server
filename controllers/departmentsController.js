@@ -1,4 +1,5 @@
 const Department = require('../models/department')
+const Ticket = require('../models/ticket')
 
 const index = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ const create = async (req, res) => {
     }
     const department = await Department.create(req.body)
     if (!department) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(400).json({ error: 'Error Saving Data.' })
     }
     res.status(201).json(department)
   } catch (error) {
@@ -36,7 +37,7 @@ const create = async (req, res) => {
 
 const companyDepartments = async (req, res) => {
   try {
-    const { company } = req.user.companyId
+    const company = req.user.companyId
     if (req.user.role === 'super') {
       company = req.params.companyId
     }
@@ -82,7 +83,7 @@ const update = async (req, res) => {
       })
     }
     if (!department) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(400).json({ error: 'Error Saving Data.' })
     }
     res.status(200).json(department)
   } catch (error) {
@@ -92,7 +93,37 @@ const update = async (req, res) => {
 
 const deleting = async (req, res) => {
   try {
-    const department = ''
+    const department = null
+    const ticket = await Ticket.find({ departmentId: req.params.id })
+    if (ticket) {
+      if (req.user.role === 'super') {
+        department = await Department.findByIdAndUpdate(req.params.id, {
+          status: 'suspended'
+        })
+        if (!department) {
+          return res.status(400).json({ error: 'Bad request.' })
+        }
+        return res
+          .status(201)
+          .json({ error: 'Department has tickets. it is suspended only' })
+      } else {
+        department = await Department.findOneAndUpdate(
+          {
+            _id: req.params.id,
+            companyId: req.user.companyId
+          },
+          { status: 'suspended' }
+        )
+        if (!department) {
+          return res.status(400).json({ error: 'Bad request.' })
+        } else {
+          return res
+            .status(201)
+            .json({ error: 'Department has tickets. it is suspended only' })
+        }
+      }
+    }
+
     if (req.user.role === 'super') {
       department = await Department.findByIdAndDelete(req.params.id)
     } else {
@@ -109,3 +140,5 @@ const deleting = async (req, res) => {
     res.status(400).json({ error: error.message })
   }
 }
+
+module.exports = { index, create, companyDepartments, show, update, deleting }
