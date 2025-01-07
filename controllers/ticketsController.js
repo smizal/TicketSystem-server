@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
-const Ticket = require("../models/tickets.model.js")  // Updated to tickets.model.js
+const Ticket = require("../models/ticketsModel.js") // Updated to tickets.model.js
 
-const ticketList = (req, res) => {
+const ticketsList = (req, res) => {
   res.send("List of tickets")
 }
 
-const ticketForm = (req, res) => {
+const newTicketForm = (req, res) => {
   res.send("New ticket form")
 }
 
@@ -40,8 +40,8 @@ const deleteTicket = (req, res) => {
 
 // Export all functions
 module.exports = {
-  ticketList,
-  ticketForm,
+  ticketsList,
+  newTicketForm,
   createTicket,
   ticketDetails,
   editTicket,

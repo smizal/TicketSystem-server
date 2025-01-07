@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const Company = require("../models/companies.model.js")
+const Company = require("../models/companiesModel.js")
 
 const companiesList = (req, res) => {
   res.send("List of companies")

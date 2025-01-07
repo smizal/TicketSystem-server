@@ -19,20 +19,20 @@ app.use(express.urlencoded({ extended: true }))
 // app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(cors())
 
-const adminRoute = require("./routes/admin.routes.js")
-const authRoute = require("./routes/auth.routes.js")
-const companiesRoute = require("./routes/companies.routes.js")
-// const departmentsRoute = require("./routes/departments.routes");
-// const ticketsRoute = require("./routes/tickets.routes");
-// const usersRoute = require("./routes/users.routes");
+const adminRoute = require("./routes/adminRoutes.js")
+const authRoute = require("./routes/authRoutes.js")
+const companiesRoute = require("./routes/companiesRoutes.js")
+// const departmentsRoute = require("./routes/departmentsRoutes")
+const ticketsRoute = require("./routes/ticketsRoutes")
+// const usersRoute = require("./routes/usersRoutes")
 
 // Proper Routes use
-app.use("/api/admin", adminRoute)
-app.use("/api/auth", authRoute)
-app.use("/api/companies", companiesRoute)
-// app.use("/api", departmentsRoute);
-// app.use("/api", ticketsRoute);
-// app.use("/api", usersRoute);
+app.use("/admin", adminRoute)
+app.use("/auth", authRoute)
+app.use("/companies", companiesRoute)
+// app.use("/departements", departmentsRoute)
+app.use("/tickets", ticketsRoute)
+// app.use("/users", usersRoute)
 
 app.listen(PORT, () => {
   console.log(`The express app is ready on http://localhost:${PORT}`)

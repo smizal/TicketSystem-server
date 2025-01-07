@@ -8,7 +8,7 @@ const {
   updateCompanie,
   editCompanieStatusForm,
   deleteCompanie,
-} = require("../controllers/companies.controller.js")
+} = require("../controllers/companiesController.js")
 
 const router = express.Router()
 
