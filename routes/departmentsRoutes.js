@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express")
 const {
   index,
   companyDepartments,
@@ -6,15 +6,15 @@ const {
   show,
   update,
   deleting,
-} = require("../controllers/departmentsController.js"); // Updated to departmentsController.js
+} = require("../controllers/departmentsController.js") // Updated to departmentsController.js
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", index);
-router.get("/dep/:id", companyDepartments);
-router.post("/", create);
-router.get("/:id", show);
-router.post("/edit/:id", update);
-router.delete("/:id", deleting);
+router.get("/", index)
+router.get("/dep/:id", companyDepartments)
+router.post("/", create)
+router.get("/:id", show)
+router.post("/edit/:id", update)
+router.delete("/:id", deleting)
 
-module.exports = router;
+module.exports = router

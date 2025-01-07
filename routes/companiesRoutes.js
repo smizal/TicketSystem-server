@@ -1,24 +1,19 @@
 const express = require("express")
 const {
-  companiesList,
-  newCompanieForm,
-  createCompanie,
-  companieDetails,
-  editCompanie,
-  updateCompanie,
-  editCompanieStatusForm,
-  deleteCompanie,
+  index,
+
+  create,
+  show,
+  update,
+  deleting,
 } = require("../controllers/companiesController.js")
 
 const router = express.Router()
 
-router.get("/", companiesList)
-router.get("/new", newCompanieForm)
-router.post("/", createCompanie)
-router.get("/:id", companieDetails)
-router.post("/edit/:id", editCompanie)
-router.put("/:id", updateCompanie)
-router.put("/:id/:status", editCompanieStatusForm)
-router.delete("/:id", deleteCompanie)
+router.get("/", index)
+router.post("/", create)
+router.get("/:id", show)
+router.post("/edit/:id", update)
+router.delete("/:id", deleting)
 
 module.exports = router
