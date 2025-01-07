@@ -1,9 +1,8 @@
-const express = require('express')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 const { signToken } = require('../middleware/jwtUtils')
-const SALT = process.env.SALT ? process.env.SALT : 12
+// const SALT = process.env.SALT ? process.env.SALT : 12
 
 const login = async (req, res) => {
   try {
