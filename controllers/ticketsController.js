@@ -1,20 +1,20 @@
 const Ticket = require("../models/ticketsModel")
 const Thread = require("../models/threadsModel")
-
+const { request } = require("express")
 
 const index = async (req, res) => {
   try {
     const tickets = ""
     if (req.user.role === "super") {
       tickets = await Ticket.find()
-    }else if(req.user.role === "admin"){
+    } else if (req.user.role === "admin") {
       tickets = await Ticket.find({
-        companyId: req.user.companyId
+        companyId: req.user.companyId,
       })
     } else {
       tickets = await Ticket.find({
         companyId: req.user.companyId,
-        departementId:req.user.departementId
+        departementId: req.user.departementId,
       })
     }
     if (!tickets) {
@@ -41,7 +41,6 @@ const create = async (req, res) => {
   }
 }
 
-
 const show = async (req, res) => {
   try {
     const ticket = ""
@@ -66,7 +65,9 @@ const update = async (req, res) => {
   try {
     const ticket = req.body
     if (req.user.role === "super") {
-      ticket = await Ticket.findByIdAndUpdate(req.params.id)
+      ticket = await Ticket.findByIdAndUpdate(req.params.id, request.body, {
+        new: true,
+      })
     } else {
       ticket = await Ticket.findOneAndUpdate({
         _id: req.params.id,
@@ -84,11 +85,12 @@ const update = async (req, res) => {
 
 const deleting = async (req, res) => {
   try {
+    let ticket
     const department = null
     const thread = await Thread.find({ departmentId: req.params.id })
     if (thread) {
       if (req.user.role === "super") {
-        th = await Ticket.findByIdAndUpdate(req.params.id, {
+        ticket = await Ticket.findByIdAndUpdate(req.params.id, {
           status: "suspended",
         })
         if (!department) {
