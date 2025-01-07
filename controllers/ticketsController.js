@@ -1,51 +1,135 @@
-const mongoose = require("mongoose")
-const Ticket = require("../models/ticketsModel.js") // Updated to tickets.model.js
+const Ticket = require("../models/ticketsModel")
+const Thread = require("../models/threadsModel")
 
-const ticketsList = (req, res) => {
-  res.send("List of tickets")
+
+const index = async (req, res) => {
+  try {
+    const tickets = ""
+    if (req.user.role === "super") {
+      tickets = await Ticket.find()
+    }else if(req.user.role === "admin"){
+      tickets = await Ticket.find({
+        companyId: req.user.companyId
+      })
+    } else {
+      tickets = await Ticket.find({
+        companyId: req.user.companyId,
+        departementId:req.user.departementId
+      })
+    }
+    if (!tickets) {
+      return res.status(404).json({ error: "Bad request." })
+    }
+    res.status(200).json(tickets)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 }
 
-const newTicketForm = (req, res) => {
-  res.send("New ticket form")
+const create = async (req, res) => {
+  try {
+    if (req.user.role != "super") {
+      req.body.companyId = req.user.companyId
+    }
+    const ticket = await Ticket.create(req.body)
+    if (!ticket) {
+      return res.status(400).json({ error: "Error Saving Data." })
+    }
+    res.status(201).json(ticket)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 }
 
-const createTicket = (req, res) => {
-  res.send("Create a new ticket")
+
+const show = async (req, res) => {
+  try {
+    const ticket = ""
+    if (req.user.role === "super") {
+      ticket = await Ticket.findById(req.params.id)
+    } else {
+      ticket = await Ticket.find({
+        _id: req.params.id,
+        companyId: req.user.companyId,
+      })
+    }
+    if (!ticket) {
+      return res.status(404).json({ error: "Bad request." })
+    }
+    res.status(200).json(ticket)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 }
 
-const ticketDetails = (req, res) => {
-  const { id } = req.params
-  res.send(`Details of ticket with id: ${id}`)
+const update = async (req, res) => {
+  try {
+    const ticket = req.body
+    if (req.user.role === "super") {
+      ticket = await Ticket.findByIdAndUpdate(req.params.id)
+    } else {
+      ticket = await Ticket.findOneAndUpdate({
+        _id: req.params.id,
+        companyId: req.user.companyId,
+      })
+    }
+    if (!ticket) {
+      return res.status(400).json({ error: "Error Saving Data." })
+    }
+    res.status(200).json(ticket)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
 }
 
-const editTicket = (req, res) => {
-  const { id } = req.params
-  res.send(`Edit ticket with id: ${id}`)
+const deleting = async (req, res) => {
+  try {
+    const department = null
+    const thread = await Thread.find({ departmentId: req.params.id })
+    if (thread) {
+      if (req.user.role === "super") {
+        th = await Ticket.findByIdAndUpdate(req.params.id, {
+          status: "suspended",
+        })
+        if (!department) {
+          return res.status(400).json({ error: "Bad request." })
+        }
+        return res
+          .status(201)
+          .json({ error: "This Ticket Is Suspended Can't Be Deleted" })
+      } else {
+        ticket = await Ticket.findOneAndUpdate(
+          {
+            _id: req.params.id,
+            companyId: req.user.companyId,
+          },
+          { status: "suspended" }
+        )
+        if (!ticket) {
+          return res.status(400).json({ error: "Bad request." })
+        } else {
+          return res
+            .status(201)
+            .json({ error: "Ticket has tickets. it is suspended only" })
+        }
+      }
+    }
+
+    if (req.user.role === "super") {
+      department = await Ticket.findByIdAndDelete(req.params.id)
+    } else {
+      department = await Ticket.findOneAndDelete({
+        _id: req.params.id,
+        companyId: req.user.companyId,
+      })
+    }
+    if (!department) {
+      return res.status(400).json({ error: "Bad request." })
+    }
+    res.status(200).json(department)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
 }
 
-const updateTicket = (req, res) => {
-  const { id } = req.params
-  res.send(`Update ticket with id: ${id}`)
-}
-
-const editTicketStatusForm = (req, res) => {
-  const { id, status } = req.params
-  res.send(`Change status of ticket with id: ${id} to ${status}`)
-}
-
-const deleteTicket = (req, res) => {
-  const { id } = req.params
-  res.send(`Delete ticket with id: ${id}`)
-}
-
-// Export all functions
-module.exports = {
-  ticketsList,
-  newTicketForm,
-  createTicket,
-  ticketDetails,
-  editTicket,
-  updateTicket,
-  editTicketStatusForm,
-  deleteTicket,
-}
+module.exports = { index, create, show, update, deleting }

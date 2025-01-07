@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express")
 const {
   index,
   create,
@@ -6,15 +6,15 @@ const {
   show,
   update,
   deleting,
-} = require("../controllers/usersController.js");
+} = require("../controllers/usersController.js")
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", index);
-router.get("/comp/:id", companyUsers);
-router.post("/", create);
-router.get("/:id", show);
-router.post("/edit/:id", update);
-router.delete("/:id", deleting);
+router.get("/", index)
+router.get("/comp/:id", companyUsers)
+router.post("/", create)
+router.get("/:id", show)
+router.post("/edit/:id", update)
+router.delete("/:id", deleting)
 
-module.exports = router;
+module.exports = router
