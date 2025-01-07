@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Company = require("../models/companiesModel.js")
+const Ticket = require("../models/ticketsModel.js")
 
 const index = async (req, res) => {
   try {
@@ -59,7 +60,7 @@ const update = async (req, res) => {
   try {
     const company = req.body
     if (req.user.role === "super") {
-      company = await Company.findByIdAndUpdate(req.params.id)
+      company = await Company.findByIdAndUpdate(req.params.id, { new: true })
     } else {
       company = await Company.findOneAndUpdate({
         _id: req.params.id,
