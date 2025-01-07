@@ -1,6 +1,6 @@
-const User = require("../models/user")
-const Ticket = require("../models/ticket")
-const Department = require("../models/department")
+const User = require("../models/usersModel")
+const Ticket = require("../models/ticketsModel")
+const Department = require("../models/departmentsModel")
 
 const bcrypt = require("bcrypt")
 const SALT = process.env.SALT ? +process.env.SALT : 12

@@ -8,7 +8,7 @@ const index = async (req, res) => {
       departments = await Department.find()
     } else {
       departments = await Department.find({
-        companyId: req.user.companyId,
+        // companyId: req.user.companyId,
       })
     }
     if (!departments) {
@@ -75,7 +75,9 @@ const update = async (req, res) => {
   try {
     const department = req.body
     if (req.user.role === "super") {
-      department = await Department.findByIdAndUpdate(req.params.id)
+      department = await Department.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      })
     } else {
       department = await Department.findOneAndUpdate({
         _id: req.params.id,
@@ -83,7 +85,7 @@ const update = async (req, res) => {
       })
     }
     if (!department) {
-      return res.status(400).json({ error: "Error Saving Data." })
+      return res.status(400).json({ error: "Department not found" })
     }
     res.status(200).json(department)
   } catch (error) {
@@ -93,11 +95,13 @@ const update = async (req, res) => {
 
 const deleting = async (req, res) => {
   try {
-    const department = null
+    // Check for tickets associated with the department
     const ticket = await Ticket.find({ departmentId: req.params.id })
+
     if (ticket) {
+      // If there are tickets, handle the suspension logic
       if (req.user.role === "super") {
-        department = await Department.findByIdAndUpdate(req.params.id, {
+        const department = await Department.findByIdAndUpdate(req.params.id, {
           status: "suspended",
         })
         if (!department) {
@@ -105,9 +109,9 @@ const deleting = async (req, res) => {
         }
         return res
           .status(201)
-          .json({ error: "Department has tickets. it is suspended only" })
+          .json({ error: "Department has tickets. It is suspended only." })
       } else {
-        department = await Department.findOneAndUpdate(
+        const department = await Department.findOneAndUpdate(
           {
             _id: req.params.id,
             companyId: req.user.companyId,
@@ -116,13 +120,15 @@ const deleting = async (req, res) => {
         )
         if (!department) {
           return res.status(400).json({ error: "Bad request." })
-        } else {
-          return res
-            .status(201)
-            .json({ error: "Department has tickets. it is suspended only" })
         }
+        return res
+          .status(201)
+          .json({ error: "Department has tickets. It is suspended only." })
       }
     }
+
+    // If no tickets found, proceed with deletion
+    let department
 
     if (req.user.role === "super") {
       department = await Department.findByIdAndDelete(req.params.id)
@@ -132,10 +138,15 @@ const deleting = async (req, res) => {
         companyId: req.user.companyId,
       })
     }
+
     if (!department) {
       return res.status(400).json({ error: "Bad request." })
     }
-    res.status(200).json(department)
+
+    // Respond with the deleted department info
+    res
+      .status(200)
+      .json({ message: "Department deleted successfully.", department })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
