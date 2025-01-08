@@ -18,6 +18,11 @@ const companySchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    cr: {
+      type: String,
+      unique: true,
+      required: true
+    },
     photo: {
       type: String,
       required: false

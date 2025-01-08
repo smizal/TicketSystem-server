@@ -24,6 +24,14 @@ const userSchema = new mongoose.Schema(
       max: 9,
       required: true
     },
+    phone: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Company',
@@ -41,7 +49,7 @@ const userSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'suspended'],
+      enum: ['active', 'suspended', 'pending'],
       required: true
     },
     notes: {
