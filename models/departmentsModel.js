@@ -18,6 +18,7 @@ const departmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ['active', 'suspended'],
+      default: 'active',
       required: true
     },
     notes: {
