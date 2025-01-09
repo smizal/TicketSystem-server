@@ -14,16 +14,19 @@ const create = async (req, res) => {
       !postData.name ||
       !postData.phone ||
       !postData.cpr ||
+      !postData.email ||
       !postData.companyId ||
       !postData.departmentId ||
-      !postData.description
+      !postData.title ||
+      !postData.description ||
+      !postData.type
     ) {
       return res.status(400).json({ error: 'Missing required fields.' })
     }
 
     const userExist = await User.findOne({ cpr: postData.cpr })
-    const customerId = 0
-    const issuerId = 0
+    let customerId = 0
+    let issuerId = 0
     if (userExist) {
       customerId = userExist._id
       issuerId = userExist._id
@@ -56,6 +59,7 @@ const create = async (req, res) => {
     } */
     req.body.customerId = customerId
     req.body.issuerId = issuerId
+    req.body.source = 'web'
     const ticket = await Ticket.create(req.body)
     if (!ticket) {
       return res.status(400).json({ error: 'Error saving data.' })
@@ -68,7 +72,7 @@ const create = async (req, res) => {
 
 const ticketList = async (req, res) => {
   try {
-    const tickets = await User.find({
+    const tickets = await Ticket.find({
       customerId: req.loggedUser.user._id
     }).populate('companyId departmentId')
     if (!tickets) {
@@ -82,14 +86,17 @@ const ticketList = async (req, res) => {
 
 const show = async (req, res) => {
   try {
-    const ticket = await User.find({
+    const ticket = await Ticket.find({
       _id: req.params.id,
       customerId: req.loggedUser.user._id
     }).populate('companyId departmentId')
     if (!ticket) {
       return res.status(404).json({ error: 'Bad request.' })
     }
-    res.status(200).json(ticket)
+    const threads = await Thread.find({ ticketId: req.params.id }).sort({
+      createdAt: 1
+    })
+    res.status(200).json({ ticket, threads })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }

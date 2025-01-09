@@ -41,7 +41,9 @@ const companyDepartments = async (req, res) => {
     if (req.loggedUser.user.role === 'super') {
       company = req.params.id
     }
-    const departments = await Department.find({ companyId: company })
+    const departments = await Department.find({ companyId: company }).populate(
+      'companyId'
+    )
     if (!departments) {
       return res.status(404).json({ error: 'Bad request.' })
     }
@@ -55,12 +57,14 @@ const show = async (req, res) => {
   try {
     let department = ''
     if (req.loggedUser.user.role === 'super') {
-      department = await Department.findById(req.params.id)
+      department = await Department.findById(req.params.id).populate(
+        'companyId'
+      )
     } else {
       department = await Department.find({
         _id: req.params.id,
         companyId: req.loggedUser.user.companyId
-      })
+      }).populate('companyId')
     }
     if (!department) {
       return res.status(404).json({ error: 'Bad request.' })

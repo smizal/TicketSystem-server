@@ -7,13 +7,13 @@ const SALT = process.env.SALT ? +process.env.SALT : 12
 
 const index = async (req, res) => {
   try {
-    const users = ''
+    let users = ''
     if (req.loggedUser.user.role === 'super') {
-      users = await User.find()
+      users = await User.find().populate('companyId departmentId')
     } else {
       users = await User.find({
         companyId: req.loggedUser.user.companyId
-      })
+      }).populate('companyId departmentId')
     }
     if (!users) {
       return res.status(404).json({ error: 'Bad request.' })
@@ -80,11 +80,13 @@ const create = async (req, res) => {
 
 const companyUsers = async (req, res) => {
   try {
-    const company = req.loggedUser.user.companyId
+    let company = req.loggedUser.user.companyId
     if (req.loggedUser.user.role === 'super') {
       company = req.params.id
     }
-    const users = await User.find({ companyId: company })
+    const users = await User.find({ companyId: company }).populate(
+      'companyId departmentId'
+    )
     if (!users) {
       return res.status(404).json({ error: 'Bad request.' })
     }
@@ -96,14 +98,16 @@ const companyUsers = async (req, res) => {
 
 const show = async (req, res) => {
   try {
-    const user = ''
+    let user = ''
     if (req.loggedUser.user.role === 'super') {
-      user = await User.findById(req.params.id)
+      user = await User.findById(req.params.id).populate(
+        'companyId departmentId'
+      )
     } else {
       user = await User.find({
         _id: req.params.id,
         companyId: req.loggedUser.user.companyId
-      })
+      }).populate('companyId departmentId')
     }
     if (!user) {
       return res.status(404).json({ error: 'Bad request.' })
@@ -116,14 +120,22 @@ const show = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const user = req.body
+    let user = null
     if (req.loggedUser.user.role === 'super') {
-      user = await User.findByIdAndUpdate(req.params.id)
-    } else {
-      user = await User.findOneAndUpdate({
-        _id: req.params.id,
-        companyId: req.loggedUser.user.companyId
+      user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true
       })
+    } else {
+      user = await User.findOneAndUpdate(
+        {
+          _id: req.params.id,
+          companyId: req.loggedUser.user.companyId
+        },
+        req.body,
+        {
+          new: true
+        }
+      )
     }
     if (!user) {
       return res.status(400).json({ error: 'Bad request.' })
@@ -136,13 +148,13 @@ const update = async (req, res) => {
 
 const deleting = async (req, res) => {
   try {
-    const user = null
+    let user = null
     const ticket = await Ticket.find({
       $or: [{ customerId: req.params.id }, { issuerId: req.params.id }]
     })
 
     if (ticket) {
-      if (req.loggedUser.user.role === 'super') {
+      if (req.loggedUser.user.role === 'super' && ticket.length > 0) {
         user = await User.findByIdAndUpdate(req.params.id, {
           status: 'suspended'
         })
@@ -152,7 +164,7 @@ const deleting = async (req, res) => {
         return res
           .status(201)
           .json({ error: 'User has tickets. it is suspended only' })
-      } else {
+      } else if (ticket.length > 0) {
         user = await User.findOneAndUpdate(
           {
             _id: req.params.id,

@@ -14,7 +14,7 @@ router.get('/', index)
 router.get('/comp/:id', companyUsers)
 router.post('/', create)
 router.get('/:id', show)
-router.post('/edit/:id', update)
+router.put('/edit/:id', update)
 router.delete('/:id', deleting)
 
 module.exports = router
