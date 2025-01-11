@@ -89,13 +89,15 @@ const show = async (req, res) => {
     const ticket = await Ticket.find({
       _id: req.params.id,
       customerId: req.loggedUser.user._id
-    }).populate('companyId departmentId')
+    }).populate('companyId departmentId customerId issuerId')
     if (!ticket) {
       return res.status(404).json({ error: 'Bad request.' })
     }
-    const threads = await Thread.find({ ticketId: req.params.id }).sort({
-      createdAt: 1
-    })
+    const threads = await Thread.find({ ticketId: req.params.id })
+      .sort({
+        createdAt: 1
+      })
+      .populate('issuerId')
     res.status(200).json({ ticket, threads })
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -175,12 +177,11 @@ const addThread = async (req, res) => {
     }
 
     await Ticket.findByIdAndUpdate(req.params.id, {
-      status: ticket.status
+      status: req.body.ticketStatus
     })
     req.body.ticketId = req.params.id
     req.body.issuerId = req.loggedUser.user._id
     req.body.status = 'active'
-    req.body.ticketStatus = ticket.status
 
     const thread = Thread.create(req.body)
     res.status(200).json(thread)
