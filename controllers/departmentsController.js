@@ -8,7 +8,7 @@ const index = async (req, res) => {
       departments = await Department.find().populate('companyId')
     } else {
       departments = await Department.find({
-        // companyId: req.loggedUser.user.companyId,
+        companyId: req.loggedUser.user.companyId
       }).populate('companyId')
     }
     if (!departments) {

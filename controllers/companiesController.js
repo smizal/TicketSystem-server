@@ -29,11 +29,11 @@ const create = async (req, res) => {
     }
     const company = await Company.create(req.body)
     if (!company) {
-      return res.status(400).json({ error: 'Error Saving Data.' })
+      return res.status(200).json({ error: 'Error Saving Data.' })
     }
     res.status(201).json(company)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(200).json({ error: error.message })
   }
 }
 
