@@ -1,5 +1,9 @@
 const Ticket = require('../models/ticketsModel')
 const Thread = require('../models/threadsModel')
+const User = require('../models/usersModel')
+
+const bcrypt = require('bcrypt')
+const SALT = process.env.SALT ? +process.env.SALT : 12
 
 const index = async (req, res) => {
   try {
@@ -26,16 +30,64 @@ const index = async (req, res) => {
     res.status(500).json({ error: error.message })
   }
 }
+const create3 = async (req, res) => {
+  try {
+    const ticket = await Ticket.create(req.body)
+    if (!ticket) {
+      return res.status(400).json({ error: 'Error saving data.' })
+    }
+    res.status(201).json(ticket)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
 
 const create = async (req, res) => {
   try {
+    const postData = req.body
+    if (
+      !postData.name ||
+      !postData.phone ||
+      !postData.cpr ||
+      !postData.email ||
+      !postData.companyId ||
+      !postData.departmentId ||
+      !postData.title ||
+      !postData.description ||
+      !postData.type
+    ) {
+      return res.status(400).json({ error: 'Missing required fields.' })
+    }
+
+    let userExist = await User.findOne({ cpr: postData.cpr })
+    let customerId = 0
+    if (userExist) {
+      customerId = userExist._id
+    } else {
+      const hashedPassword = bcrypt.hashSync(postData.cpr, SALT)
+      const newUser = {
+        name: postData.name,
+        username: postData.cpr,
+        password: hashedPassword,
+        phone: postData.phone,
+        cpr: postData.cpr,
+        email: postData.email,
+        role: 'customer',
+        status: 'active'
+      }
+      userExist = await User.create(newUser)
+      customerId = userExist._id
+    }
+
     if (req.loggedUser.user.role != 'super') {
       req.body.companyId = req.loggedUser.user.companyId
     }
+    req.body.customerId = customerId
+    req.body.issuerId = req.loggedUser.user._id
     req.body.source = 'phone'
     const ticket = await Ticket.create(req.body)
     if (!ticket) {
-      return res.status(400).json({ error: 'Error Saving Data.' })
+      return res.status(200).json({ error: 'Error Saving Data.' })
     }
     res.status(201).json(ticket)
   } catch (error) {
