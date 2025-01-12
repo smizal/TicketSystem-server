@@ -39,11 +39,11 @@ const create = async (req, res) => {
       !newUser.role ||
       (newUser.role === 'staff' && !newUser.departmentId)
     ) {
-      return res.status(400).json({ error: 'Missing required fields.' })
+      return res.status(200).json({ error: 'Missing required fields.' })
     }
 
     if (newUser.password !== newUser.confirmPassword) {
-      return res.status(400).json({ error: 'Passwords are not matched.' })
+      return res.status(200).json({ error: 'Passwords are not matched.' })
     }
     const usernameExist = await User.findOne({ username: newUser.username })
     if (usernameExist) {
@@ -70,7 +70,7 @@ const create = async (req, res) => {
     console.log(user)
 
     if (!user) {
-      return res.status(400).json({ error: 'Error saving data.' })
+      return res.status(200).json({ error: 'Error saving data.' })
     }
     res.status(201).json(user)
   } catch (error) {
@@ -138,11 +138,11 @@ const update = async (req, res) => {
       )
     }
     if (!user) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(user)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(500).json({ error: error.message })
   }
 }
 
@@ -159,7 +159,7 @@ const deleting = async (req, res) => {
           status: 'suspended'
         })
         if (!user) {
-          return res.status(400).json({ error: 'Error suspending user.' })
+          return res.status(200).json({ error: 'Error suspending user.' })
         }
         return res
           .status(201)
@@ -173,7 +173,7 @@ const deleting = async (req, res) => {
           { status: 'suspended' }
         )
         if (!user) {
-          return res.status(400).json({ error: 'Error suspending user.' })
+          return res.status(200).json({ error: 'Error suspending user.' })
         } else {
           return res
             .status(201)
@@ -191,11 +191,11 @@ const deleting = async (req, res) => {
       })
     }
     if (!user) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(user)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(500).json({ error: error.message })
   }
 }
 

@@ -12,7 +12,7 @@ const index = async (req, res) => {
       }).populate('companyId')
     }
     if (!departments) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(departments)
   } catch (error) {
@@ -27,7 +27,7 @@ const create = async (req, res) => {
     }
     const department = await Department.create(req.body)
     if (!department) {
-      return res.status(400).json({ error: 'Error Saving Data.' })
+      return res.status(200).json({ error: 'Error Saving Data.' })
     }
     res.status(201).json(department)
   } catch (error) {
@@ -45,7 +45,7 @@ const companyDepartments = async (req, res) => {
       'companyId'
     )
     if (!departments) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(departments)
   } catch (error) {
@@ -67,7 +67,7 @@ const show = async (req, res) => {
       }).populate('companyId')
     }
     if (!department) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(department)
   } catch (error) {
@@ -89,7 +89,7 @@ const update = async (req, res) => {
       })
     }
     if (!department) {
-      return res.status(400).json({ error: 'Department not found' })
+      return res.status(200).json({ error: 'Department not found' })
     }
     res.status(200).json(department)
   } catch (error) {
@@ -109,7 +109,7 @@ const deleting = async (req, res) => {
           status: 'suspended'
         })
         if (!department) {
-          return res.status(400).json({ error: 'Bad request.' })
+          return res.status(200).json({ error: 'Bad request.' })
         }
         return res
           .status(201)
@@ -123,7 +123,7 @@ const deleting = async (req, res) => {
           { status: 'suspended' }
         )
         if (!department) {
-          return res.status(400).json({ error: 'Bad request.' })
+          return res.status(200).json({ error: 'Bad request.' })
         }
         return res
           .status(201)
@@ -144,7 +144,7 @@ const deleting = async (req, res) => {
     }
 
     if (!department) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
 
     // Respond with the deleted department info
