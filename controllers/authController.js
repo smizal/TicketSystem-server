@@ -8,7 +8,7 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body
     if (!username || !password) {
-      return res.status(400).json({ error: 'Missing required fields.' })
+      return res.status(200).json({ error: 'Missing required fields.' })
     }
     const user = await User.findOne({ username: username })
     if (!user) {
@@ -34,7 +34,7 @@ const login = async (req, res) => {
         .json({ error: 'incorrect Username & Password combination.' })
     }
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(500).json({ error: error.message })
   }
 }
 

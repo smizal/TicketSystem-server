@@ -14,7 +14,7 @@ const index = async (req, res) => {
       })
     }
     if (!companies) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(companies)
   } catch (error) {
@@ -49,7 +49,7 @@ const show = async (req, res) => {
       })
     }
     if (!company) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(company)
   } catch (error) {
@@ -77,7 +77,7 @@ const update = async (req, res) => {
       )
     }
     if (!company) {
-      return res.status(400).json({ error: 'Error Saving Data.' })
+      return res.status(200).json({ error: 'Error Saving Data.' })
     }
     res.status(200).json(company)
   } catch (error) {
@@ -101,7 +101,7 @@ const deleting = async (req, res) => {
           }
         )
         if (!company) {
-          return res.status(400).json({ error: 'Bad request.' })
+          return res.status(200).json({ error: 'Bad request.' })
         }
         return res
           .status(201)
@@ -118,10 +118,10 @@ const deleting = async (req, res) => {
           }
         )
         if (!company) {
-          return res.status(400).json({ error: 'Bad request.' })
+          return res.status(200).json({ error: 'Bad request.' })
         } else {
           return res
-            .status(201)
+            .status(200)
             .json({ error: 'Company has departments. it is suspended only' })
         }
       }
@@ -136,7 +136,7 @@ const deleting = async (req, res) => {
       })
     }
     if (!company) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(company)
   } catch (error) {

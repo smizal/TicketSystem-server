@@ -21,7 +21,7 @@ const create = async (req, res) => {
       !postData.description ||
       !postData.type
     ) {
-      return res.status(400).json({ error: 'Missing required fields.' })
+      return res.status(200).json({ error: 'Missing required fields.' })
     }
 
     const userExist = await User.findOne({ cpr: postData.cpr })
@@ -46,23 +46,12 @@ const create = async (req, res) => {
       customerId = userExist._id
       issuerId = userExist._id
     }
-
-    /* const newTicket = {
-      title: postData.title,
-      source: postData.source,
-      type: postData.type,
-      companyId: postData.companyId,
-      departmentId: postData.departmentId,
-      customerId: customerId,
-      issuerId: issuerId,
-      description: postData.description
-    } */
     req.body.customerId = customerId
     req.body.issuerId = issuerId
     req.body.source = 'web'
     const ticket = await Ticket.create(req.body)
     if (!ticket) {
-      return res.status(400).json({ error: 'Error saving data.' })
+      return res.status(200).json({ error: 'Error saving data.' })
     }
     res.status(201).json(ticket)
   } catch (error) {
@@ -76,7 +65,7 @@ const ticketList = async (req, res) => {
       customerId: req.loggedUser.user._id
     }).populate('companyId departmentId')
     if (!tickets) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(tickets)
   } catch (error) {
@@ -91,7 +80,7 @@ const show = async (req, res) => {
       customerId: req.loggedUser.user._id
     }).populate('companyId departmentId customerId issuerId')
     if (!ticket) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     const threads = await Thread.find({ ticketId: req.params.id })
       .sort({
@@ -120,18 +109,18 @@ const register = async (req, res) => {
       !postData.password ||
       !postData.cpr
     ) {
-      return res.status(400).json({ error: 'Missing required fields.' })
+      return res.status(200).json({ error: 'Missing required fields.' })
     }
 
     const companyExist = await Company.findOne({ cr: postData.companyCr })
     if (companyExist) {
-      return res.status(409).json({ error: 'Company already registered.' })
+      return res.status(200).json({ error: 'Company already registered.' })
     }
 
     const usernameExist = await User.findOne({ cpr: postData.cpr })
     if (usernameExist && usernameExist.companyId) {
       return res
-        .status(409)
+        .status(200)
         .json({ error: 'Username already registered with other company.' })
     }
 
@@ -173,7 +162,7 @@ const addThread = async (req, res) => {
     })
 
     if (!ticket) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
 
     await Ticket.findByIdAndUpdate(req.params.id, {
@@ -194,7 +183,7 @@ const companiesList = async (req, res) => {
   try {
     const companies = await Company.find({})
     if (!companies) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(companies)
   } catch (error) {
@@ -206,7 +195,7 @@ const companyDepartments = async (req, res) => {
   try {
     const departments = await Department.find({ companyId: req.params.id })
     if (!departments) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(departments)
   } catch (error) {

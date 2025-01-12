@@ -23,7 +23,7 @@ const index = async (req, res) => {
       })
     }
     if (!tickets) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(tickets)
   } catch (error) {
@@ -34,7 +34,7 @@ const create3 = async (req, res) => {
   try {
     const ticket = await Ticket.create(req.body)
     if (!ticket) {
-      return res.status(400).json({ error: 'Error saving data.' })
+      return res.status(200).json({ error: 'Error saving data.' })
     }
     res.status(201).json(ticket)
   } catch (error) {
@@ -56,7 +56,7 @@ const create = async (req, res) => {
       !postData.description ||
       !postData.type
     ) {
-      return res.status(400).json({ error: 'Missing required fields.' })
+      return res.status(200).json({ error: 'Missing required fields.' })
     }
 
     let userExist = await User.findOne({ cpr: postData.cpr })
@@ -109,7 +109,7 @@ const show = async (req, res) => {
       }).populate('companyId departmentId customerId issuerId')
     }
     if (!ticket) {
-      return res.status(404).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     const threads = await Thread.find({ ticketId: req.params.id }).sort({
       createdAt: 1
@@ -141,11 +141,11 @@ const update = async (req, res) => {
       )
     }
     if (!ticket) {
-      return res.status(400).json({ error: 'Error Saving Data.' })
+      return res.status(200).json({ error: 'Error Saving Data.' })
     }
     res.status(200).json(ticket)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(500).json({ error: error.message })
   }
 }
 
@@ -159,7 +159,7 @@ const deleting = async (req, res) => {
           status: 'suspended'
         })
         if (!ticket) {
-          return res.status(400).json({ error: 'Bad request.' })
+          return res.status(200).json({ error: 'Bad request.' })
         }
         return res
           .status(201)
@@ -173,7 +173,7 @@ const deleting = async (req, res) => {
           { status: 'suspended' }
         )
         if (!ticket) {
-          return res.status(400).json({ error: 'Bad request.' })
+          return res.status(200).json({ error: 'Bad request.' })
         } else {
           return res
             .status(201)
@@ -191,11 +191,11 @@ const deleting = async (req, res) => {
       })
     }
     if (!ticket) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(ticket)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(500).json({ error: error.message })
   }
 }
 
@@ -206,13 +206,13 @@ const addThread = async (req, res) => {
 
     const thread = await Thread.create(req.body)
     if (!thread) {
-      return res.status(400).json({ error: 'Error Saving Data.' })
+      return res.status(200).json({ error: 'Error Saving Data.' })
     }
     const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
       status: req.body.ticketStatus
     })
     if (!ticket) {
-      return res.status(400).json({ error: 'Error updating ticket status.' })
+      return res.status(200).json({ error: 'Error updating ticket status.' })
     }
     res.status(201).json(thread)
   } catch (error) {
@@ -224,11 +224,11 @@ const deleteThread = async (req, res) => {
   try {
     const thread = await Thread.findByIdAndDelete(req.params.tid)
     if (!thread) {
-      return res.status(400).json({ error: 'Bad request.' })
+      return res.status(200).json({ error: 'Bad request.' })
     }
     res.status(200).json(thread)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(200).json({ error: error.message })
   }
 }
 
